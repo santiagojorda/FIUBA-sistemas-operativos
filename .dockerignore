@@ -1,0 +1,8 @@
+README.md
+LICENSE
+.gitignore
+.clang-*
+.pre-commit-config.yaml
+primes
+xargs
+Dockerfile

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [[ $# == 0 ]]; then
+	echo "labpath is required"
+	exit 1
+fi;
+
+LAB_PATH=$1
+shift
+
+docker build -t test-fork-runner -f Dockerfile .
+docker run --rm -v $LAB_PATH:/fork/lab-under-test test-fork-runner ./tests/test-fork /fork/lab-under-test $@

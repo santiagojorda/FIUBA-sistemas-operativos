@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+
+from subprocess import Popen
+from argparse import ArgumentParser
+
+COMMANDS = ['xargs', 'primes']
+
+def exec_test(lab_path, command, run_valgrind=False):
+    command = [f'./tests/{command}-test.py', f'{lab_path}/{command}']
+
+    if run_valgrind:
+        command.append('-v');
+
+    p = Popen(command)
+    p.wait()
+
+def exec_all_tests(lab_path, run_valgrind=False):
+    for command in COMMANDS:
+        exec_test(lab_path, command, run_valgrind)
+
+def make_clean(lab_path):
+    p = Popen(['make', 'clean'], cwd=lab_path)
+    p.wait()
+
+def make(lab_path, command):
+    # compile the commands
+    if command == 'all':
+        p = Popen(['make'], cwd=lab_path)
+    else:
+        p = Popen(['make', command], cwd=lab_path)
+    p.wait()
+
+def main(lab_path, command, run_valgrind):
+    make_clean(lab_path)
+
+    make(lab_path, command)
+
+    if command == 'all':
+        exec_all_tests(lab_path, run_valgrind)
+    else:
+        exec_test(lab_path, command, run_valgrind)
+
+    make_clean(lab_path)
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description='Test runner for Lab Fork - FISOP')
+
+    parser.add_argument(
+        'labpath',
+        help='path to the lab under test'
+    )
+
+    parser.add_argument(
+        '-c',
+        '--command',
+        choices=COMMANDS,
+        default='all',
+        help='command to be tested'
+    )
+
+    parser.add_argument(
+        '-v',
+        '--valgrind',
+        action='store_true',
+        help='Run tests within Valgrind'
+    )
+
+    args = parser.parse_args()
+
+    main(args.labpath, args.command, args.valgrind)
