@@ -7,5 +7,5 @@
 - 💻 [Página del curso](https://fisop.github.io/website/)
 - 💻 [Apuntes de catedra](https://fisop.github.io/apunte/index.html)
 - 🎥 [Videos](https://www.youtube.com/playlist?list=PLDW872573QAb4bj0URobvQTD41IV6gRkx)
-
+- 📄 [Resolucion parciales](https://docs.google.com/document/d/1fZWxm3gdmGHZICH6CHZGf3t1TsOUHt-2Ci_QAmY_hK0/edit)
 
