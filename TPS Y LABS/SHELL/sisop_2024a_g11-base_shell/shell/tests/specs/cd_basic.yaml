@@ -1,0 +1,18 @@
+name: cd_basic
+description: "cd works correctly by checking pwd (no prompt)"
+command: |2
+  sh -c "{shell_binary}"
+stdin: |2
+  cd /home
+  /bin/pwd
+  cd /proc
+  /bin/pwd
+  cd sys
+  /bin/pwd
+  cd kernel
+  /bin/pwd
+expected_stdout: |2
+  /home
+  /proc
+  /proc/sys
+  /proc/sys/kernel

@@ -1,0 +1,8 @@
+name: env_unset_variable
+description: "unset variables are not substituted"
+command: |2
+  {shell_binary}
+stdin: |2
+  echo hi $PRUEBA
+expected_stdout: |2
+  hi

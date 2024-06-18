@@ -1,0 +1,7 @@
+name: redirect_do_not_execve_if_failed
+description: "a failed redirect prevents the command from executing"
+command: |2
+  {shell_binary} 2>/dev/null
+stdin: |2
+  echo hi <{tempdir}/redirect-do-not-execve.txt
+expected_stdout: |2

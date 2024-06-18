@@ -1,0 +1,10 @@
+name: simple_exit
+description: "exit built-in"
+command: |2
+  {shell_binary}
+stdin: |2
+  echo hi
+  exit
+  echo hi
+expected_stdout: |2
+  hi

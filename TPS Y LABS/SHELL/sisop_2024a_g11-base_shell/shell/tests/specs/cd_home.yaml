@@ -1,0 +1,24 @@
+name: cd_home
+description: "cd with no arguments takes you home (/proc/sys :D)"
+command: |2
+  HOME=/proc/sys sh -c "{shell_binary}"
+stdin: |2
+  cd
+  /bin/pwd
+  cd /home
+  /bin/pwd
+  cd
+  /bin/pwd
+  cd
+  /bin/pwd
+  cd kernel
+  /bin/pwd
+  cd /home
+  /bin/pwd
+expected_stdout: |2
+  /proc/sys
+  /home
+  /proc/sys
+  /proc/sys
+  /proc/sys/kernel
+  /home

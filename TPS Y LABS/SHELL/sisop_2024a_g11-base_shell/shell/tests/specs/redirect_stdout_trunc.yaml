@@ -1,0 +1,9 @@
+name: redirect_stdout_trunc
+description: "redirect stdout (TRUNC) works as expected"
+command: |2
+  {shell_binary} >/dev/null 2>/dev/null; cat {tempdir}/redirect_stdout_trunc.txt
+stdin: |2
+  seq 5 >{tempdir}/redirect_stdout_trunc.txt
+  echo hi >{tempdir}/redirect_stdout_trunc.txt
+expected_stdout: |2
+  hi

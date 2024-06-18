@@ -1,0 +1,12 @@
+name: redirect_stdout
+description: "redirect stdout works as expected"
+command: |2
+  {shell_binary} >/dev/null 2>/dev/null; cat {tempdir}/redirect_stdout.txt
+stdin: |2
+  seq 5 >{tempdir}/redirect_stdout.txt
+expected_stdout: |2
+  1
+  2
+  3
+  4
+  5

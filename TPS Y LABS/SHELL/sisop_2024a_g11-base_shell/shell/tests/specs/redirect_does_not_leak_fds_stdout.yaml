@@ -1,0 +1,9 @@
+name: redirect_does_not_leak_fds
+description: "redirect does not leak file descritors into the executed command"
+command: |2
+  sh -c "{shell_binary} 2>/dev/null 1>/dev/null; wc -l {tempdir}/leaks-redirect.txt"
+stdin: |2
+  {reflector} >out.txt {tempdir}/leaks-redirect.txt
+expected_stdout: |2
+  3 {tempdir}/leaks-redirect.txt
+

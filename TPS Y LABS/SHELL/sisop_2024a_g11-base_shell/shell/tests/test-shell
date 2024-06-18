@@ -1,0 +1,155 @@
+#!/usr/bin/python3
+
+import os
+import shutil
+import sys
+import tempfile
+import yaml
+
+from os import listdir
+from os.path import isfile, join
+from yaml.loader import SafeLoader
+from subprocess import Popen, PIPE, STDOUT
+from termcolor import cprint
+
+def compare_strings(current, expected):
+    if current != expected:
+        message="""
+        Expected:
+
+        {}
+
+        But got:
+        
+        {}
+        """.format(expected.encode() if expected else None, current.encode() if expected else None)
+        return message
+    return None
+
+def launch_test(
+    name,
+    stdin=b'echo hi',
+    shell_binary='./example-shell/sh',
+    timeout=100,
+    expected_stdout=None,
+    expected_stderr=None,
+    check_stdout=False,
+    check_stderr=False,
+    shell=True
+):
+    """
+    executes an instance of the _shell_ binary to test (located at _shell_binary_)
+    with a given _stdin_ and compares stdout to _expected_stdout_ and stderr to _expected_stderr_.
+    If both outputs match, then it returns True indicating a successful test. Otherwise it returns false.
+    A _timeout_ can be set to limit the excecution.
+    """
+    p = Popen(shell_binary, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=shell)
+    (stdout, stderr) = p.communicate(input=stdin, timeout=timeout)
+
+    if check_stdout:
+        msg = compare_strings(stdout.decode() if stdout else None, expected_stdout if expected_stdout else None)
+        if msg:
+            raise Exception("Check stdout failed: {}".format(msg))
+
+    if check_stderr:
+        msg = compare_strings(stderr.decode() if stderr else None, expected_stderr if expected_stderr else None)
+        if msg:
+            raise Exception("Check stderr failed: {}".format(msg))
+
+class ShellTest():
+    def __init__(self, filepath: str, sub_map):
+        data = ""
+        with open(filepath) as f:
+            data = yaml.load(f, Loader=SafeLoader)
+
+        self.name = data['name']
+        self.description = data['description']
+        self.command = data['command']
+        self.command = self._substitude_vars(self.command, sub_map)
+        self.stdin = data['stdin'] if 'stdin' in data else None
+        self.stdin = self._substitude_vars(self.stdin, sub_map)
+        self.expected_stdout = data['expected_stdout'] if 'expected_stdout' in data else None
+        self.expected_stdout = self._substitude_vars(self.expected_stdout, sub_map)
+        self.expected_stderr = data['expected_stderr'] if 'expected_stderr' in data else None
+        self.expected_stderr = self._substitude_vars(self.expected_stderr, sub_map)
+
+    def _substitude_vars(self, target: str, subs):
+        if not target:
+            return target
+
+        for subs_from, subs_to in subs:
+            target = target.replace(subs_from, subs_to)
+        return target
+
+    def run(self):
+        launch_test(
+            self.name,
+            stdin=self.stdin.encode(),
+            shell_binary=self.command,
+            expected_stdout=self.expected_stdout,
+            expected_stderr=self.expected_stderr,
+            check_stdout=True,
+            check_stderr=True
+        )
+
+def run_tests(shell_binary: str, reflector_binary: str, tests: list[str]):
+    # This has to be an absolute path, since it will be invoked from the
+    # shell-to-test and we cannot guarantee the home it will be running on.
+    tempdir = tempfile.mkdtemp(suffix='-shell-test')
+
+    print("=== Temporary files will be stored in: {} ===\n".format(tempdir))
+
+    subs_map = [
+        ('{shell_binary}', shell_binary),
+        ('{tempdir}', tempdir),
+        ('{reflector}', reflector_binary),
+    ]
+
+    # Sort for consistent ordering
+    tests.sort()
+
+    count = 1
+    failed = 0
+    total = len(tests)
+
+    for test_path in tests:
+        test = ShellTest(test_path, subs_map)
+        try:
+            test.run()
+            cprint("PASS {}/{}: {} ({})".format(count, total, test.description, test.name), "green")
+        except Exception as e:
+            cprint("FAIL {}/{}: {} ({}). Exception ocurred: {}".format(count, total, test.description, test.name, e), "red")
+            failed += 1
+        finally:
+            count += 1
+
+    cprint("{} out of {} tests passed".format(total - failed, total), "yellow" if failed else "green")
+
+    shutil.rmtree(tempdir)
+
+def run_all_tests(shell_binary: str, reflector_binary: str):
+    test_files_path = "./tests/specs"
+
+    tests = [join(test_files_path, f) for f in listdir(test_files_path) if isfile(join(test_files_path, f))]
+
+    run_tests(shell_binary, reflector_binary, tests)
+
+def run_single_test(shell_binary: str, reflector_binary: str, test_name: str):
+    test_path = "./tests/specs/{}.yaml".format(test_name)
+
+    run_tests(shell_binary, reflector_binary, [test_path])
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("{}: {} <test-shell-binary> <reflector>".format(sys.argv[0], sys.argv[0]))
+        exit()
+
+    shell_binary = sys.argv[1]
+    reflector_binary = sys.argv[2]
+
+    if len(sys.argv) == 4:
+        run_single_test(shell_binary, reflector_binary, sys.argv[3])
+    else:
+        run_all_tests(shell_binary, reflector_binary)
+

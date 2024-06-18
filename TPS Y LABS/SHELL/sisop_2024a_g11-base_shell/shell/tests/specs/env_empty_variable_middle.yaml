@@ -1,0 +1,8 @@
+name: env_empty_middle_variable
+description: "empty middle variables are not substituted"
+command: |2
+  PRUEBA= {shell_binary}
+stdin: |2
+  echo hi $PRUEBA bye
+expected_stdout: |2
+  hi bye

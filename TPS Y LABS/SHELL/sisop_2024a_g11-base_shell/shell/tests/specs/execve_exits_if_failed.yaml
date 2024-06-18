@@ -1,0 +1,11 @@
+name: execve_exits_if_failed
+description: "child proceses exit if execve fails"
+command: |2
+  {shell_binary} 2>/dev/null | grep "^{shell_binary}" | wc -l
+stdin: |2
+  no-existe
+  no-existe
+  no-existe
+  ps -o cmd
+expected_stdout: |2
+  1

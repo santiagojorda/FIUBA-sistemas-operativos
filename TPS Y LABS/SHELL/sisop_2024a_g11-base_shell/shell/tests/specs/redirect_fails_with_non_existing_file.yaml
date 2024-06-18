@@ -1,0 +1,8 @@
+name: redirect_fails_with_non_existing_file
+description: "redirect stdin from a non-existing file does not create an empty file"
+command: |2
+  sh -c "{shell_binary} 2>/dev/null 1>/dev/null; ls {tempdir}/no-existe.txt"
+stdin: |2
+  echo <{tempdir}/no-existe.txt
+expected_stdout: |2
+  ls: cannot access '{tempdir}/no-existe.txt': No such file or directory

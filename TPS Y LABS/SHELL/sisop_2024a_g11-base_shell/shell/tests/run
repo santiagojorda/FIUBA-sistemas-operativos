@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+cc tests/reflector.c -o tests/reflector
+
+docker build -t test-shell-runner -f Dockerfile .
+docker run --rm test-shell-runner ./tests/test-shell /shell/sh /shell/tests/reflector $1

@@ -1,0 +1,14 @@
+name: env_magic_variable
+description: "magic variable $? works properly"
+command: |2
+  {shell_binary} 2>/dev/null
+stdin: |2
+  true
+  echo $?
+  ls /no-existe
+  echo $?
+  echo $?
+expected_stdout: |2
+  0
+  2
+  0

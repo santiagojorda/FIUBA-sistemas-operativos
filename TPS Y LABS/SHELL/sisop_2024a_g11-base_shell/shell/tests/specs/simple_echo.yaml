@@ -1,0 +1,9 @@
+name: simple_echo
+description: "simple echo command"
+command: |2
+  {shell_binary}
+stdin: |2
+  echo hi
+expected_stdout: |2
+  hi
+

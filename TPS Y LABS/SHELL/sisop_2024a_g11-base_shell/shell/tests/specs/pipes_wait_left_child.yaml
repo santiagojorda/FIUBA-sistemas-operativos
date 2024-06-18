@@ -1,0 +1,8 @@
+name: pipes_wait_left_child
+description: "shell properly waits for the left child"
+command: |2
+  sh -c "/usr/bin/time -f %e {shell_binary} 2>&1| cut -d. -f1"
+stdin: |2
+  sleep 2 | sleep 1
+expected_stdout: |2
+  2

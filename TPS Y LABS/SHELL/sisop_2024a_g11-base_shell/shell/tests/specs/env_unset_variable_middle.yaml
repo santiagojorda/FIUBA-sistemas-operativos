@@ -1,0 +1,8 @@
+name: env_unset_middle_variable
+description: "unset middle variables are not substituted"
+command: |2
+  {shell_binary}
+stdin: |2
+  echo hi $PRUEBA bye
+expected_stdout: |2
+  hi bye

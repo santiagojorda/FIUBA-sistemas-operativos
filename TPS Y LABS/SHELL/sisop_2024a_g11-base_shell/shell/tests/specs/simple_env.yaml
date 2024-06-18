@@ -1,0 +1,10 @@
+name: simple_env
+description: "simple env variable"
+command: |2
+  {shell_binary} | grep HELLO
+stdin: |2
+  env
+  HELLO=4 env
+  env
+expected_stdout: |2
+  HELLO=4

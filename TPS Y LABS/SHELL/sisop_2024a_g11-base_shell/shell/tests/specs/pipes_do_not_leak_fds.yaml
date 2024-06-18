@@ -1,0 +1,8 @@
+name: pipes_do_not_leak_fds
+description: "consecutive pipes do not leak file descritors into the executed command"
+command: |2
+  sh -c "{shell_binary} 2>/dev/null 1>/dev/null; wc -l {tempdir}/leaks-pipes.txt"
+stdin: |2
+  echo hi | cat - | cat - | {reflector} {tempdir}/leaks-pipes.txt | cat -
+expected_stdout: |2
+  3 {tempdir}/leaks-pipes.txt

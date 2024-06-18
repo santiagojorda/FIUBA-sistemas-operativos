@@ -1,0 +1,8 @@
+name: env_substitution
+description: "simple variable substitution"
+command: |2
+  PRUEBA="probando" {shell_binary}
+stdin: |2
+  echo $PRUEBA
+expected_stdout: |2
+  probando
