@@ -7,8 +7,7 @@
 - 💻 [Página del curso](https://fisop.github.io/website/)
 - 💻 [Apuntes de catedra](https://fisop.github.io/apunte/index.html)
 - 🎥 [Videos](https://www.youtube.com/playlist?list=PLDW872573QAb4bj0URobvQTD41IV6gRkx)
-- 📄 [Resolucion parciales](https://docs.google.com/document/d/1fZWxm3gdmGHZICH6CHZGf3t1TsOUHt-2Ci_QAmY_hK0/edit)
-- 📄 [Drive con ejercicios](https://drive.google.com/drive/u/0/folders/1HFdsFeaMH7FtzKMDNhu0wyvR-kKpIoBm)
+- 🗃️ [Drive con ejercicios](https://drive.google.com/drive/u/0/folders/1HFdsFeaMH7FtzKMDNhu0wyvR-kKpIoBm)
 
 ### EJERCICIOS
 - [Memoria virtual](https://docs.google.com/document/d/15hPMW7arlVWghaux4RNj9rSrcubLBoCn8Nx6hPQnE-w/edit#heading=h.7s4c94s0mqm)
